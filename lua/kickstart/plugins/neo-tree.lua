@@ -382,7 +382,11 @@ return {
         },
       }
 
-      vim.keymap.set('n', '<leader>e', '<Cmd>Neotree reveal<CR>')
+      -- Basic keymap for neo-tree opening
+      vim.keymap.set('n', '<leader>of', '<Cmd>Neotree reveal<CR>')
+
+      -- git
+      vim.keymap.set('n', 'gs', '<Cmd>Neotree float git_status<CR>', { desc = 'Open the git status as floating windows' })
     end,
   },
 }
