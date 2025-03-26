@@ -273,20 +273,6 @@ require('lazy').setup({
     },
   },
 
-  {
-    'numToStr/Comment.nvim',
-    config = function()
-      require('Comment').setup {
-        toggler = {
-          line = '<C-_>',
-        },
-        opleader = {
-          line = '<C-_>',
-        },
-      }
-    end,
-  },
-
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -365,7 +351,7 @@ require('lazy').setup({
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
-  { -- Fuzzy Finder (files, lsp, etc)
+  { -- uzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
     branch = '0.1.x',
@@ -703,7 +689,7 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -891,12 +877,14 @@ require('lazy').setup({
           -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
+        -- NOTE: This is the place where you define lsp sources for autocompletion
         sources = {
           {
             name = 'lazydev',
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
+          { name = 'pyright' },
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
@@ -964,6 +952,9 @@ require('lazy').setup({
         return '%2l:%-2v'
       end
 
+      -- basic nvim autopairs
+      require('mini.pairs').setup {}
+
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
@@ -974,7 +965,22 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'python',
+        'javascript',
+        'typescript',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -1005,16 +1011,16 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
