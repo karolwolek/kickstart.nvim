@@ -1,8 +1,4 @@
---  [[ Basic keymaps]]
---  See `:help vim.keymap.set()`
-
 -- Clear highlights on search when pressing <Esc> in normal mode
---  See `:help hlsearch`
 --  it also is clearing the cmdline in windows with :echo command
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>:echo<CR>')
 
@@ -23,17 +19,12 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
---  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- [[ Basic Autocommands ]]
---  See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -60,31 +51,35 @@ vim.api.nvim_create_autocmd('TermOpen', {
   end,
 })
 
-local term_buff = nil
-local term_win = 0
+local term_buf = nil
 
 local open_terminal = function()
-  if term_buff and vim.api.nvim_buf_is_valid(term_buff) then
-    -- if terminal exists, just show it
-    vim.api.nvim_set_current_win(term_win)
+  if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
+    local winid = vim.fn.bufwinid(term_buf)
+
+    if winid ~= -1 and vim.api.nvim_win_is_valid(winid) then
+      local winnum = vim.fn.bufwinnr(term_buf)
+      vim.cmd(string.format('%dwincmd w', winnum))
+    else
+      -- buffer hidden reopen in bottom split
+      vim.cmd('botright sbuffer' .. term_buf)
+    end
   else
     -- create a new terminal
-    vim.cmd.vnew()
-    vim.cmd.term()
-    vim.cmd.wincmd 'J'
-    vim.api.nvim_win_set_height(0, 15)
-
-    --store the window ID
-    term_win = vim.api.nvim_get_current_win()
+    vim.cmd [[
+      botright new
+      term
+    ]]
+    term_buf = vim.api.nvim_get_current_buf()
   end
+
+  vim.api.nvim_win_set_height(0, 15)
 end
 
 vim.keymap.set('n', '<leader>ot', open_terminal, { desc = 'This opens a terminal at the bottom of your workspace' })
 
 vim.keymap.set('n', '<leader>gs', function()
-  if not term_buff or vim.api.nvim_buff_is_valid(term_buff) then
-    open_terminal()
-  end
-  local job_id = vim.api.nvim_get_option_value('channel', { buf = term_buff })
+  open_terminal()
+  local job_id = vim.api.nvim_get_option_value('channel', { buf = term_buf })
   vim.fn.chansend(job_id, 'git status\r\n')
-end)
+end, { desc = 'Opens a git status message in a terminal' })

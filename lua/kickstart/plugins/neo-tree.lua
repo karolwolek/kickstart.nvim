@@ -13,12 +13,11 @@ return {
   keys = {
     { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
+  lazy = false,
   opts = {
-    filesystem = {
-      window = {
-        mappings = {
-          ['\\'] = 'close_window',
-        },
+    window = {
+      mappings = {
+        ['\\'] = 'close_window',
       },
     },
   },
