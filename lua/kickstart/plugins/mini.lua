@@ -20,10 +20,7 @@ return {
       }
 
       -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
       statusline.setup { use_icons = vim.g.have_nerd_font }
 
       -- You can configure sections in the statusline by overriding their
@@ -33,14 +30,6 @@ return {
       statusline.section_location = function()
         return '%2l:%-2v'
       end
-
-      -- basic nvim autopairs
-      require('mini.pairs').setup {}
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
 }
-
--- vim: ts=2 sts=2 sw=2 et

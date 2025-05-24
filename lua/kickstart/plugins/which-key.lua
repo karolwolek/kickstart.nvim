@@ -56,14 +56,16 @@ return {
 
       -- Document existing key chains
       spec = {
-        -- { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-        -- { '<leader>d', group = '[D]ocument' },
-        -- { '<leader>r', group = '[R]ename' },
+        -- leaders
         { '<leader>s', group = '[S]earch' },
-        -- { '<leader>w', group = '[W]orkspace' },
-
+        { '<leader>o', group = '[O]pen' },
+        { '<leader>g', group = '[G]it commands' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+
+        -- lsp
+        -- TODO: it's not workings as intended
+        { 'gr', group = { 'LSP capabilities' }, mode = { 'n' } },
       },
     },
   },

@@ -23,7 +23,8 @@ require('lazy').setup({
 
   require 'kickstart/plugins/context',
 
-  require 'kickstart/plugins/autocompletion',
+  -- migration to blink
+  require 'kickstart/plugins/autocompletion-blink',
 
   require 'kickstart/plugins/obsidian',
 
@@ -35,7 +36,7 @@ require('lazy').setup({
 
   require 'kickstart.plugins.lint',
 
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
 
   require 'kickstart.plugins.neo-tree',
 }, {

@@ -14,16 +14,22 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Move the lines
+vim.keymap.set({ 'n', 'i' }, '<C-n>', '<ESC>ddp', { noremap = true, desc = 'Move the line down one line' })
+vim.keymap.set({ 'n', 'i' }, '<C-p>', '<ESC>ddkP', { noremap = true, desc = 'Move the line up one line' })
+
+vim.keymap.set('n', '<S-u>', 'vawU', { noremap = true, desc = 'Convert a word to the uppercase' })
+vim.keymap.set('n', '<S-l>', 'vawu', { noremap = true, desc = 'convert a word to the lowercase' })
 -- [[ Basic Autocommands ]]
 
 -- Highlight when yanking (copying) text
@@ -37,19 +43,20 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('q-close-help', { clear = true }),
+  pattern = { 'help', 'man' },
+  desc = 'Use q to close the window',
+  command = 'nnoremap <buffer> q <cmd>quit<cr>',
+})
+
 --[
--- This is my first plugin made with a TJ help "and a little gpt help"
+-- This is my first plugin made with a TJ help
 -- It's opening a terminal attached at the bottom with <leader>ot combination
 -- You can map here some basic functionalities like git status with <leader>gs
 --]
 
-vim.api.nvim_create_autocmd('TermOpen', {
-  group = vim.api.nvim_create_augroup('custom-term-open', { clear = true }),
-  callback = function()
-    vim.opt.number = false
-    vim.opt.relativenumber = false
-  end,
-})
+-- INFO: [[TERMINAL]] terminal opening helpers
 
 local term_buf = nil
 
@@ -62,6 +69,7 @@ local open_terminal = function()
       vim.cmd(string.format('%dwincmd w', winnum))
     else
       -- buffer hidden reopen in bottom split
+      -- botright opens bottom split, sbuffer open buffer in split
       vim.cmd('botright sbuffer' .. term_buf)
     end
   else
@@ -76,7 +84,27 @@ local open_terminal = function()
   vim.api.nvim_win_set_height(0, 15)
 end
 
-vim.keymap.set('n', '<leader>ot', open_terminal, { desc = 'This opens a terminal at the bottom of your workspace' })
+-- INFO: [[TERMINAL]] keymaps and auto-commands
+
+vim.api.nvim_create_augroup('custom-term-open', { clear = true })
+
+vim.api.nvim_create_autocmd('TermOpen', {
+  group = 'custom-term-open',
+  callback = function()
+    vim.opt.number = false
+    vim.opt.relativenumber = false
+    vim.cmd 'startinsert'
+  end,
+  desc = 'Disable numbers in terminal',
+})
+
+vim.api.nvim_create_autocmd('TermOpen', {
+  group = 'custom-term-open',
+  desc = 'Close terminal with q',
+  command = 'map <buffer> q <cmd>quit<cr>',
+})
+
+vim.keymap.set('n', '<leader>ot', open_terminal, { desc = 'open [t]erminal' })
 
 vim.keymap.set('n', '<leader>gs', function()
   open_terminal()

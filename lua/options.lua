@@ -1,6 +1,3 @@
--- Write directly to the file
-vim.o.backupcopy = 'yes'
-
 -- Make line numbers default
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -15,6 +12,7 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
+-- TODO: resolve clipboard integration other way
 vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
@@ -62,5 +60,7 @@ vim.opt.scrolloff = 10
 -- See `:help 'confirm'`
 vim.opt.confirm = true
 
--- set relative line numbers
-vim.opt.rnu = true
+-- INFO: Bullets.vim options
+-- TODO: MIGRATION TO PLUGIN OPTION LATER
+
+vim.g.bullets_outline_levels = { 'num', 'num', 'num' }
