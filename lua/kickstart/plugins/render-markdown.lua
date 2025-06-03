@@ -4,6 +4,7 @@ return {
     dependencies = {
       'echasnovski/mini.nvim',
       'nvim-tree/nvim-web-devicons',
+      'nvim-treesitter/nvim-treesitter',
     },
 
     ---@module 'render-markdown'
@@ -58,6 +59,9 @@ return {
         icon = '▎',
         -- Applied to icon.
         highlight = 'RenderMarkdownIndent',
+      },
+      latex = {
+        enabled = false,
       },
     },
   },

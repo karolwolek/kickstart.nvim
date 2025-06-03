@@ -32,6 +32,7 @@ return {
 
       notes_subdir = 'inbox/',
       new_notes_location = 'notes_subdir',
+      trash_dir = '.trash',
 
       -- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
       completion = {
@@ -39,7 +40,28 @@ return {
         -- migrated to blink
         nvim_cmp = false,
         -- Trigger completion at 2 chars.
-        min_chars = 2,
+        min_chars = 0,
+      },
+
+      daily_notes = {
+        -- Optional, if you keep daily notes in a separate directory.
+        folder = 'notes/dailies',
+        -- Optional, if you want to change the date format for the ID of daily notes.
+        date_format = '%Y-%m-%d',
+        -- Optional, if you want to change the date format of the default alias of daily notes.
+        alias_format = '%-d %B, %Y',
+        -- Optional, default tags to add to each new daily note created.
+        default_tags = { 'pim', 'daily-notes' },
+        -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
+        template = 'daily.md',
+        -- Optional, if you want `Obsidian yesterday` to return the last work day or `Obsidian tomorrow` to return the next work day.
+        workdays_only = true,
+      },
+
+      templates = {
+        folder = 'templates',
+        date_format = '%Y-%m-%d',
+        time_format = '%H:%M',
       },
 
       -- Optional, configure key mappings. These are the defaults. If you don't want to set any keymappings this
@@ -83,12 +105,56 @@ return {
         -- search for notes in the inbox
         ['<leader>si'] = {
           action = function()
-            local client = require('obsidian').get_client()
-            local picker = assert(client:picker())
-            picker:find_files {
-              prompt_title = 'Notes in the inbox',
-              dir = '/home/karolwolek/Documents/myvault/inbox/',
-            }
+            -- function redefinition for recursion
+            -- after deleting the function is called again for refresh
+            local function search_inbox()
+              local client = require('obsidian').get_client()
+              local picker = assert(client:picker())
+              picker:find_files {
+                prompt_title = 'Notes in the inbox',
+                dir = '/home/karolwolek/Documents/myvault/inbox/',
+                -- TODO: refactor for multiple selection
+                selection_mappings = {
+                  ['<C-d>'] = {
+                    callback = function(note_or_path)
+                      ---@type obsidian.Note
+                      local note = require 'obsidian.note'
+                      if note.is_note_obj(note_or_path) then
+                        note = note
+                      else
+                        note = note.from_file(note_or_path)
+                      end
+
+                      local config_trash = client.opts.trash_dir -- config injected (trash_dir)
+                      local target_dir = client.current_workspace.path:joinpath(config_trash)
+                      if not target_dir then
+                        target_dir = client.current_workspace.path:joinpath '.trash'
+                      end
+                      if not target_dir:is_dir() then
+                        target_dir:mkdir()
+                      end
+
+                      local target_path = target_dir:joinpath(note.path.name)
+
+                      local success, err = pcall(function()
+                        os.rename(note.path.filename, target_path.filename)
+                      end)
+
+                      if success then
+                        print('Note moved to: ' .. target_path.filename)
+                        search_inbox()
+                      else
+                        print('Error moving note: ' .. (err or 'Unknown error'))
+                      end
+                    end,
+                    desc = 'Discard note',
+                    keep_open = true,
+                    allow_multiple = false,
+                  },
+                },
+              }
+            end
+            search_inbox()
           end,
           opts = { buffer = false, expr = false, noremap = true, desc = '[S]earch [I]nbox notes' },
         },
@@ -244,15 +310,6 @@ return {
         return tostring(os.date '%Y-%m-%d') .. '_' .. suffix
       end,
 
-      -- Optional, customize how note file names are generated given the ID, target directory, and title.
-      ---@param spec { id: string, dir: obsidian.Path, title: string|? }
-      ---@return string|obsidian.Path The full path to the new note.
-      note_path_func = function(spec)
-        -- This is equivalent to the default behavior.
-        local path = spec.dir / tostring(spec.id)
-        return path:with_suffix '.md'
-      end,
-
       wiki_link_func = 'prepend_note_path',
 
       -- Optional, customize how markdown links are formatted.
@@ -307,6 +364,38 @@ return {
         vim.fn.jobstart { 'xdg-open', url } -- linux
         -- vim.cmd(':silent exec "!start ' .. url .. '"') -- Windows
       end,
+
+      -- Optional, define your own callbacks to further customize behavior.
+      callbacks = {
+        -- Runs at the end of `require("obsidian").setup()`.
+        ---@param client obsidian.Client
+        post_setup = function(client) end,
+
+        -- Runs anytime you enter the buffer for a note.
+        ---@param client obsidian.Client
+        ---@param note obsidian.Note
+        enter_note = function(client, note)
+          vim.cmd 'highlight myTag guifg=#71d4eb'
+          vim.cmd 'match myTag /#[0-9]*[a-zA-Z_\\-\\/][a-zA-Z_\\-\\/0-9]*/'
+        end,
+
+        -- Runs anytime you leave the buffer for a note.
+        ---@param client obsidian.Client
+        ---@param note obsidian.Note
+        leave_note = function(client, note)
+          vim.cmd 'highlight clear myTag'
+        end,
+
+        -- Runs right before writing the buffer for a note.
+        ---@param client obsidian.Client
+        ---@param note obsidian.Note
+        pre_write_note = function(client, note) end,
+
+        -- Runs anytime the workspace is set/changed.
+        ---@param client obsidian.Client
+        ---@param workspace obsidian.Workspace
+        post_set_workspace = function(client, workspace) end,
+      },
 
       -- Disable the obsidian UI because of the incompatible ui
       -- with render-markdown plugin

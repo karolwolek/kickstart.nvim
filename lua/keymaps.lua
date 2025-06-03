@@ -13,23 +13,41 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- TIP: Disable arrow keys in normal mode
+-- Disable arrow keys in normal mode
 vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
 vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
+-- Move windows focus
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- Move the lines
+-- Move the lines up and down
 vim.keymap.set({ 'n', 'i' }, '<C-n>', '<ESC>ddp', { noremap = true, desc = 'Move the line down one line' })
 vim.keymap.set({ 'n', 'i' }, '<C-p>', '<ESC>ddkP', { noremap = true, desc = 'Move the line up one line' })
 
+-- lowercase/uppercase the word
 vim.keymap.set('n', '<S-u>', 'vawU', { noremap = true, desc = 'Convert a word to the uppercase' })
 vim.keymap.set('n', '<S-l>', 'vawu', { noremap = true, desc = 'convert a word to the lowercase' })
+
+-- no-neck-pain
+vim.keymap.set('n', '<leader><leader>', '<cmd>NoNeckPain<CR>', { desc = 'Center the window', silent = true, noremap = true })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<M-->', function()
+  ---@diagnostic disable-next-line: param-type-mismatch
+  pcall(vim.cmd, 'NoNeckPainWidthDown') -- No warning
+end, { desc = 'Decrease window size', silent = true, noremap = true })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<M-=>', function()
+  ---@diagnostic disable-next-line: param-type-mismatch
+  pcall(vim.cmd, 'NoNeckPainWidthUp')
+end, { desc = 'Increase window size', silent = true, noremap = true })
+vim.keymap.set('n', '<leader>ts', function()
+  ---@diagnostic disable-next-line: param-type-mismatch
+  pcall(vim.cmd, 'NoNeckPainScratchPad')
+end, { desc = "[T]oggle [S]hratchpad with today's note", silent = true, noremap = true })
+
 -- [[ Basic Autocommands ]]
 
 -- Highlight when yanking (copying) text
@@ -52,8 +70,7 @@ vim.api.nvim_create_autocmd('FileType', {
 
 --[
 -- This is my first plugin made with a TJ help
--- It's opening a terminal attached at the bottom with <leader>ot combination
--- You can map here some basic functionalities like git status with <leader>gs
+-- It's opening a terminal attached at the bottom with <leader>tt combination
 --]
 
 -- INFO: [[TERMINAL]] terminal opening helpers
@@ -104,10 +121,4 @@ vim.api.nvim_create_autocmd('TermOpen', {
   command = 'map <buffer> q <cmd>quit<cr>',
 })
 
-vim.keymap.set('n', '<leader>ot', open_terminal, { desc = 'open [t]erminal' })
-
-vim.keymap.set('n', '<leader>gs', function()
-  open_terminal()
-  local job_id = vim.api.nvim_get_option_value('channel', { buf = term_buf })
-  vim.fn.chansend(job_id, 'git status\r\n')
-end, { desc = 'Opens a git status message in a terminal' })
+vim.keymap.set('n', '<leader>tt', open_terminal, { desc = '[T]oggle [T]erminal' })

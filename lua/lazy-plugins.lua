@@ -23,14 +23,17 @@ require('lazy').setup({
 
   require 'kickstart/plugins/context',
 
-  -- migration to blink
   require 'kickstart/plugins/autocompletion-blink',
-
-  require 'kickstart/plugins/obsidian',
 
   require 'kickstart/plugins/render-markdown',
 
+  require 'kickstart/plugins/obsidian',
+
+  require 'kickstart/plugins/noneckpain',
+
   -- require 'kickstart.plugins.debug',
+
+  require 'kickstart/plugins/snacks',
 
   require 'kickstart.plugins.indent_line',
 
