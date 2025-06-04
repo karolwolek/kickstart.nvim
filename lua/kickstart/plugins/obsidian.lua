@@ -409,6 +409,32 @@ return {
         -- If this is a relative path it will be interpreted as relative to the vault root.
         -- You can always override this per image by passing a full path to the command instead of just a filename.
         img_folder = '/home/karolwolek/Documents/myvault/images/',
+        -- A function that determines default name or prefix when pasting images via `:Obsidian paste_img`.
+        ---@return string
+        img_name_func = function()
+          -- Prefix image names with timestamp.
+          return string.format('Pasted image %s', os.date '%Y%m%d%H%M%S')
+        end,
+
+        -- A function that determines the text to insert in the note when pasting an image.
+        -- It takes two arguments, the `obsidian.Client` and an `obsidian.Path` to the image file.
+        -- This is the default implementation.
+        ---@param client obsidian.Client
+        ---@param path obsidian.Path the absolute path to the image file
+        ---@return string
+        img_text_func = function(client, path)
+          local name = path.stem
+          local target_file_name = string.gsub(path.filename, ' ', '-')
+          local success, err = pcall(function()
+            os.rename(path.filename, target_file_name)
+          end)
+          if not success then
+            print(err)
+          end
+          path = path.new(target_file_name)
+          path = client:vault_relative_path(path) or path
+          return string.format('![%s](%s)', name, path)
+        end,
       },
     },
   },

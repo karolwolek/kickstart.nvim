@@ -48,6 +48,30 @@ vim.keymap.set('n', '<leader>ts', function()
   pcall(vim.cmd, 'NoNeckPainScratchPad')
 end, { desc = "[T]oggle [S]hratchpad with today's note", silent = true, noremap = true })
 
+-- When opening image files
+vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
+  pattern = {
+    '*.png',
+    '*.jpg',
+    '*.jpeg',
+    '*.gif',
+    '*.bmp',
+    '*.webp',
+    '*.tiff',
+    '*.heic',
+    '*.avif',
+    '*.mp4',
+    '*.mov',
+    '*.avi',
+    '*.mkv',
+    '*.webm',
+    '*.pdf',
+  },
+  callback = function()
+    require('snacks.image.placement').opts.pos = calculate_position()
+  end,
+})
+
 -- [[ Basic Autocommands ]]
 
 -- Highlight when yanking (copying) text

@@ -17,6 +17,8 @@ vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
 
+vim.opt.conceallevel = 2
+
 -- Enable break indent
 vim.opt.breakindent = true
 

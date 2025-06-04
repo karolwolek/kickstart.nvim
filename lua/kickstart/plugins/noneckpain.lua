@@ -13,7 +13,7 @@ return {
       } }).path.filename
     end
     require('no-neck-pain').setup {
-      width = 130,
+      width = 100,
       autocmds = {
         enableOnVimEnter = false,
       },
