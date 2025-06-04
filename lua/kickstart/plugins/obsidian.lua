@@ -404,11 +404,12 @@ return {
 
       callbacks = {
         enter_note = function(_, _)
+          -- Tag highlighting
           vim.cmd 'highlight myTag guifg=#71d4eb'
           vim.cmd 'match myTag /#[0-9]*[a-zA-Z_\\-\\/][a-zA-Z_\\-\\/0-9]*/'
         end,
-
         leave_note = function(_, _)
+          -- Tag highlighting
           vim.cmd 'highlight clear myTag'
         end,
       },

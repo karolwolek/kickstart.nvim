@@ -33,44 +33,73 @@ vim.keymap.set({ 'n', 'i' }, '<C-p>', '<ESC>ddkP', { noremap = true, desc = 'Mov
 vim.keymap.set('n', '<S-u>', 'vawU', { noremap = true, desc = 'Convert a word to the uppercase' })
 vim.keymap.set('n', '<S-l>', 'vawu', { noremap = true, desc = 'convert a word to the lowercase' })
 
--- no-neck-pain
-vim.keymap.set('n', '<leader><leader>', '<cmd>NoNeckPain<CR>', { desc = 'Center the window', silent = true, noremap = true })
+-- INFO: no-neck-pain centering windows keymaps
+-- ============================================
+vim.keymap.set('n', '<leader>cc', function()
+  local nnp_state = require 'no-neck-pain.state'
+  local nnp_main = require 'no-neck-pain.main'
+
+  nnp_main.enable ''
+  if not nnp_state:is_side_enabled_and_valid 'left' then
+    nnp_main.toggle_side('', 'left')
+  end
+  if not nnp_state:is_side_enabled_and_valid 'right' then
+    nnp_main.toggle_side('', 'right')
+  end
+end, { desc = '[C]enter in the [C]enter', silent = true, noremap = true })
+-- ============================================
+vim.keymap.set('n', '<leader>cr', function()
+  local nnp_state = require 'no-neck-pain.state'
+  local nnp_main = require 'no-neck-pain.main'
+
+  nnp_main.enable ''
+  if not nnp_state:is_side_enabled_and_valid 'left' then
+    nnp_main.toggle_side('', 'left')
+  end
+  if nnp_state:is_side_enabled_and_valid 'right' then
+    nnp_main.toggle_side('', 'right')
+  end
+end, { desc = '[C]enter to the [R]ight', silent = true, noremap = true })
+-- ============================================
+vim.keymap.set('n', '<leader>cl', function()
+  local nnp_state = require 'no-neck-pain.state'
+  local nnp_main = require 'no-neck-pain.main'
+
+  nnp_main.enable ''
+  if not nnp_state:is_side_enabled_and_valid 'right' then
+    nnp_main.toggle_side('', 'right')
+  end
+  if nnp_state:is_side_enabled_and_valid 'left' then
+    nnp_main.toggle_side('', 'left')
+  end
+end, { desc = '[C]enter to the [L]eft', silent = true, noremap = true })
+-- ============================================
+vim.keymap.set('n', '<leader>c,', function()
+  local nnp = require 'no-neck-pain'
+  local nnp_state = require 'no-neck-pain.state'
+
+  if nnp_state:has_tabs() and nnp_state:is_active_tab_registered() then
+    print 'resizing'
+    nnp.resize(vim.g.nnwidth)
+  end
+end, { desc = '[C]enter restore default size', silent = true, noremap = true })
+-- ============================================
+vim.keymap.set('n', '<leader><leader>', '<cmd>NoNeckPain<CR>', { desc = '[C]enter toggle state', silent = true, noremap = true })
+-- ============================================
 vim.keymap.set({ 'n', 'i', 'v', 't' }, '<M-->', function()
   ---@diagnostic disable-next-line: param-type-mismatch
   pcall(vim.cmd, 'NoNeckPainWidthDown') -- No warning
 end, { desc = 'Decrease window size', silent = true, noremap = true })
+-- ============================================
 vim.keymap.set({ 'n', 'i', 'v', 't' }, '<M-=>', function()
   ---@diagnostic disable-next-line: param-type-mismatch
   pcall(vim.cmd, 'NoNeckPainWidthUp')
 end, { desc = 'Increase window size', silent = true, noremap = true })
+-- ============================================
 vim.keymap.set('n', '<leader>ts', function()
   ---@diagnostic disable-next-line: param-type-mismatch
   pcall(vim.cmd, 'NoNeckPainScratchPad')
 end, { desc = "[T]oggle [S]hratchpad with today's note", silent = true, noremap = true })
-
--- When opening image files
-vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
-  pattern = {
-    '*.png',
-    '*.jpg',
-    '*.jpeg',
-    '*.gif',
-    '*.bmp',
-    '*.webp',
-    '*.tiff',
-    '*.heic',
-    '*.avif',
-    '*.mp4',
-    '*.mov',
-    '*.avi',
-    '*.mkv',
-    '*.webm',
-    '*.pdf',
-  },
-  callback = function()
-    require('snacks.image.placement').opts.pos = calculate_position()
-  end,
-})
 
 -- [[ Basic Autocommands ]]
 

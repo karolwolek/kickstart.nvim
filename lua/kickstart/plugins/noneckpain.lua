@@ -12,13 +12,27 @@ return {
         load_contents = false,
       } }).path.filename
     end
-    require('no-neck-pain').setup {
-      width = 100,
+    -- global width
+    vim.g.nnwidth = 100
+
+    local nnp = require 'no-neck-pain'
+    nnp.setup {
+      width = vim.g.nnwidth,
       autocmds = {
         enableOnVimEnter = false,
       },
       mappings = {
         enabled = false,
+      },
+      integrations = {
+        -- @link https://github.com/nvim-neo-tree/neo-tree.nvim
+        NeoTree = {
+          -- The position of the tree.
+          ---@type "left"|"right"
+          position = 'left',
+          -- When `true`, if the tree was opened before enabling the plugin, we will reopen it.
+          reopen = true,
+        },
       },
       buffers = {
         setNames = false,
@@ -28,6 +42,9 @@ return {
         },
         bo = {
           filetype = 'md',
+        },
+        right = {
+          enabled = false,
         },
       },
     }
