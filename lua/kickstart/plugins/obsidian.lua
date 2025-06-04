@@ -195,6 +195,7 @@ return {
               end
 
               vim.api.nvim_win_close(win, true)
+              vim.api.nvim_buf_delete(buf, { force = true })
 
               vim.cmd { cmd = 'ObsidianNew', args = { title } }
               vim.cmd 'stopinsert'
@@ -290,6 +291,32 @@ return {
             end
           end,
           opts = { buffer = true, expr = false, noremap = true, desc = '[N]ote [A]ccept' },
+        },
+        -- paste image without default name
+        ['<M-P>'] = {
+          action = function()
+            local client = require('obsidian').get_client()
+            client.opts.attachments.img_name_func = nil
+            local success, err = pcall(vim.cmd, 'Obsidian paste_img')
+            if not success then
+              print 'There is not image in the clipboard'
+            end
+          end,
+          opts = { buffer = true, expr = false, noremap = true, desc = '[P]aste image without default' },
+        },
+        -- paste image with default name
+        ['<M-p>'] = {
+          action = function()
+            local client = require('obsidian').get_client()
+            client.opts.attachments.img_name_func = function()
+              return string.format('Pasted image %s', os.date '%Y%m%d%H%M%S')
+            end
+            local success, err = pcall(vim.cmd, 'Obsidian paste_img')
+            if not success then
+              print 'There is not image in the clipboard'
+            end
+          end,
+          opts = { buffer = true, expr = false, noremap = true, desc = '[P]aste image with default name' },
         },
       },
 
