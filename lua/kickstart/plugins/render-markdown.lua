@@ -46,7 +46,7 @@ return {
       },
       code = {
         width = 'block',
-        min_width = 45,
+        min_width = 80,
       },
       indent = {
         enabled = false,
