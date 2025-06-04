@@ -13,7 +13,7 @@ return {
       completions = { lsp = { enabled = true } },
       heading = {
         -- border = true,
-        left_pad = 1,
+        -- left_pad = 1,
         icons = { '󰎤 ', '󰎧 ', '󰎪 ', '󰎭 ', '󰎱 ', '󰎳 ' },
       },
       checkbox = {
@@ -45,11 +45,8 @@ return {
         },
       },
       code = {
-        position = 'right',
         width = 'block',
         min_width = 45,
-        left_pad = 2,
-        language_pad = 2,
       },
       indent = {
         enabled = false,
