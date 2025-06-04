@@ -318,6 +318,28 @@ return {
           end,
           opts = { buffer = true, expr = false, noremap = true, desc = '[P]aste image with default name' },
         },
+        -- open dailies with picker
+        ['<leader>nd'] = {
+          action = function()
+            vim.cmd 'Obsidian dailies'
+          end,
+          opts = { buffer = false, expr = false, noremap = true, desc = '[N]ote [D]ailes' },
+        },
+        -- open yesterdays note
+        ['<leader>ny'] = {
+          action = function()
+            vim.cmd 'Obsidian yesterday'
+            print 'dailies'
+          end,
+          opts = { buffer = false, expr = false, noremap = true, desc = '[N]ote [Y]esterday' },
+        },
+        -- open todays note
+        ['<leader>nt'] = {
+          action = function()
+            vim.cmd 'Obsidian today'
+          end,
+          opts = { buffer = false, expr = false, noremap = true, desc = '[N]ote [T]oday' },
+        },
       },
 
       -- Optional, customize how note IDs are generated given an optional title.
