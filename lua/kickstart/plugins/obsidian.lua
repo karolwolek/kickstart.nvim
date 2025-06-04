@@ -372,80 +372,35 @@ return {
         return out
       end,
 
-      -- Optional, by default when you use `:ObsidianFollowLink` on a link to an external
-      -- URL it will be ignored but you can customize this behavior here.
-      ---@param url string
       follow_url_func = function(url)
-        -- Open the URL in the default web browser.
-        -- vim.fn.jobstart { 'open', url } -- Mac OS
         vim.fn.jobstart { 'xdg-open', url } -- linux
-        -- vim.cmd(':silent exec "!start ' .. url .. '"') -- Windows
-        -- vim.ui.open(url) -- need Neovim 0.10.0+
       end,
 
-      -- Optional, by default when you use `:ObsidianFollowLink` on a link to an image
-      -- file it will be ignored but you can customize this behavior here.
-      ---@param img string
       follow_img_func = function(img)
-        -- vim.fn.jobstart { 'qlmanage', '-p', img } -- Mac OS quick look preview
-        vim.fn.jobstart { 'xdg-open', url } -- linux
-        -- vim.cmd(':silent exec "!start ' .. url .. '"') -- Windows
+        vim.fn.jobstart { 'xdg-open', img } -- linux
       end,
 
-      -- Optional, define your own callbacks to further customize behavior.
       callbacks = {
-        -- Runs at the end of `require("obsidian").setup()`.
-        ---@param client obsidian.Client
-        post_setup = function(client) end,
-
-        -- Runs anytime you enter the buffer for a note.
-        ---@param client obsidian.Client
-        ---@param note obsidian.Note
-        enter_note = function(client, note)
+        enter_note = function(_, _)
           vim.cmd 'highlight myTag guifg=#71d4eb'
           vim.cmd 'match myTag /#[0-9]*[a-zA-Z_\\-\\/][a-zA-Z_\\-\\/0-9]*/'
         end,
 
-        -- Runs anytime you leave the buffer for a note.
-        ---@param client obsidian.Client
-        ---@param note obsidian.Note
-        leave_note = function(client, note)
+        leave_note = function(_, _)
           vim.cmd 'highlight clear myTag'
         end,
-
-        -- Runs right before writing the buffer for a note.
-        ---@param client obsidian.Client
-        ---@param note obsidian.Note
-        pre_write_note = function(client, note) end,
-
-        -- Runs anytime the workspace is set/changed.
-        ---@param client obsidian.Client
-        ---@param workspace obsidian.Workspace
-        post_set_workspace = function(client, workspace) end,
       },
-
-      -- Disable the obsidian UI because of the incompatible ui
-      -- with render-markdown plugin
+      -- Disable the obsidian UI because of the incompatibility with render-markdown plugin
       ui = {
         enable = false,
       },
-
-      -- Specify how to handle attachments.
       attachments = {
-        -- The default folder to place images in via `:Obsidian pasteimg`.
-        -- If this is a relative path it will be interpreted as relative to the vault root.
-        -- You can always override this per image by passing a full path to the command instead of just a filename.
         img_folder = '/home/karolwolek/Documents/myvault/images/',
-        -- A function that determines default name or prefix when pasting images via `:Obsidian paste_img`.
-        ---@return string
+        confirm_img_paste = false,
         img_name_func = function()
-          -- Prefix image names with timestamp.
           return string.format('Pasted image %s', os.date '%Y%m%d%H%M%S')
         end,
 
-        -- A function that determines the text to insert in the note when pasting an image.
-        -- It takes two arguments, the `obsidian.Client` and an `obsidian.Path` to the image file.
-        -- This is the default implementation.
         ---@param client obsidian.Client
         ---@param path obsidian.Path the absolute path to the image file
         ---@return string
