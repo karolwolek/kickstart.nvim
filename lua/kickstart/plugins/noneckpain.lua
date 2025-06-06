@@ -3,7 +3,7 @@ return {
   version = '*',
   lazy = false,
   dependencies = {
-    'epwalsh/obsidian.nvim', -- Make sure obsidian loads first
+    'obsidian-nvim/obsidian.nvim', -- Make sure obsidian loads first
   },
   config = function()
     local function get_daily_note()
@@ -19,7 +19,7 @@ return {
     nnp.setup {
       width = vim.g.nnwidth,
       autocmds = {
-        enableOnVimEnter = false,
+        skipEnteringNoNeckPainBuffer = true,
       },
       mappings = {
         enabled = false,
