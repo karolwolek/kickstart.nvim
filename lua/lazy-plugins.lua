@@ -31,8 +31,6 @@ require('lazy').setup({
 
   require 'kickstart/plugins/noneckpain',
 
-  -- require 'kickstart.plugins.debug',
-
   require 'kickstart/plugins/snacks',
 
   require 'kickstart.plugins.indent_line',
