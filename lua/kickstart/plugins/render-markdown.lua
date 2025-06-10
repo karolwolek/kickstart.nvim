@@ -2,15 +2,16 @@ return {
   {
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = {
-      'echasnovski/mini.nvim',
       'nvim-tree/nvim-web-devicons',
       'nvim-treesitter/nvim-treesitter',
-      'saghen/blink.cmp',
     },
-
-    ---@module 'render-markdown'
-    ---@type render.md.UserConfig
+    event = {
+      'BufReadPost *.md',
+      'BufNewFile *.md',
+      'BufEnter *.md',
+    },
     opts = {
+      enabled = true,
       completions = {
         blink = { enabled = true },
         filter = {

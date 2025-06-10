@@ -1,9 +1,8 @@
 return {
   { -- Autocompletion
     'saghen/blink.cmp',
-    event = 'VimEnter',
+    event = 'InsertEnter',
     version = '1.*',
-    lazy = true,
     dependencies = {
       -- Snippet Engine
       {
@@ -69,5 +68,6 @@ return {
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true },
     },
+    opts_extend = { 'sources.default' },
   },
 }

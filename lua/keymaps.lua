@@ -34,7 +34,7 @@ vim.keymap.set('n', '<S-u>', 'vawU', { noremap = true, desc = 'Convert a word to
 vim.keymap.set('n', '<S-l>', 'vawu', { noremap = true, desc = 'convert a word to the lowercase' })
 
 -- INFO: no-neck-pain centering windows keymaps
--- ============================================
+-- ============================================================================
 vim.keymap.set('n', '<leader>cc', function()
   local nnp_state = require 'no-neck-pain.state'
   local nnp_main = require 'no-neck-pain.main'
@@ -100,6 +100,33 @@ vim.keymap.set('n', '<leader>ts', function()
   ---@diagnostic disable-next-line: param-type-mismatch
   pcall(vim.cmd, 'NoNeckPainScratchPad')
 end, { desc = "[T]oggle [S]hratchpad with today's note", silent = true, noremap = true })
+
+-- NOTE: TELESCOPE
+-- ============================================================================
+
+vim.keymap.set('n', '<leader>sh', '<cmd>Telescope help_tags<cr>', { desc = '[S]earch [H]elp' })
+vim.keymap.set('n', '<leader>sk', '<cmd>Telescope keymaps<cr>', { desc = '[S]earch [K]eymaps' })
+vim.keymap.set('n', '<leader>sf', '<cmd>Telescope find_files<cr>', { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<leader>ss', '<cmd>Telescope builtin<cr>', { desc = '[S]earch [S]elect Telescope' })
+vim.keymap.set('n', '<leader>sw', '<cmd>Telescope grep_string<cr>', { desc = '[S]earch current [W]ord' })
+vim.keymap.set('n', '<leader>sg', '<cmd>Telescope live_grep<cr>', { desc = '[S]earch by [G]rep' })
+vim.keymap.set('n', '<leader>sd', '<cmd>Telescope diagnostics<cr>', { desc = '[S]earch [D]iagnostics' })
+vim.keymap.set('n', '<leader>sr', '<cmd>Telescope resume<cr>', { desc = '[S]earch [R]esume' })
+vim.keymap.set('n', '<leader>s.', '<cmd>Telescope oldfiles<cr>', { desc = '[S]earch Recent Files ("." for repeat)' })
+vim.keymap.set('n', '<leader>sb', '<cmd>Telescope buffers<cr>', { desc = '[S]earch existing [B]uffers' })
+
+vim.keymap.set('n', '<leader>/', function()
+  local builtin = require 'telescope.builtin'
+  builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+    winblend = 10,
+    previewer = false,
+  })
+end, { desc = '[/] Fuzzily search in current buffer' })
+
+vim.keymap.set('n', '<leader>sc', function()
+  local builtin = require 'telescope.builtin'
+  builtin.find_files { cwd = vim.fn.stdpath 'config' }
+end, { desc = '[S]earch [C]onfig files' })
 
 -- [[ Basic Autocommands ]]
 

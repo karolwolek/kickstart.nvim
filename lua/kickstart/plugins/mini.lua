@@ -33,15 +33,14 @@ return {
       local original_file_section = statusline.section_fileinfo
       ---@diagnostic disable-next-line: duplicate-set-field
       statusline.section_fileinfo = function(args)
-        local current_path = vim.api.nvim_buf_get_name(0)
-        local ok, obsidian = pcall(require, 'obsidian')
-        if ok and obsidian then
-          local client = obsidian.get_client()
+        if package.loaded['obsidian'] ~= nil then
+          local client = require('obsidian').get_client()
+          local current_path = vim.api.nvim_buf_get_name(0)
           if client:path_is_note(current_path) then
             return vim.g.obsidian
-          else
-            return original_file_section(args)
           end
+        else
+          return original_file_section(args)
         end
       end
     end,

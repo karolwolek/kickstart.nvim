@@ -1,5 +1,10 @@
 require('lazy').setup({
+
   'tpope/vim-sleuth',
+
+  { 'nvim-lua/plenary.nvim', lazy = true },
+
+  require 'kickstart/plugins/lazydev',
 
   require 'kickstart/plugins/gitsigns',
 
