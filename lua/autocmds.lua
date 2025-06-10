@@ -1,0 +1,20 @@
+-- -- [[ obsidian with mini statusline ]]
+-- vim.api.nvim_create_autocmd('BufEnter', {
+--   pattern = '*.md',
+--   group = vim.api.nvim_create_augroup('obsidian-statusline', { clear = true }),
+--   callback = function()
+--     local current_path = vim.api.nvim_buf_get_name(0)
+--     local client = require('obsidian').get_client()
+--     print 'autcmd fired'
+--     if client and client:path_is_note(current_path) then
+--       print 'autcmd enterd'
+--       vim.b.ministatusline_config = {
+--         statusline = {
+--           section_fileinfo = function()
+--             return vim.g.obsidian
+--           end,
+--         },
+--       }
+--     end
+--   end,
+-- })

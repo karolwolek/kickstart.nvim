@@ -1,7 +1,5 @@
 require('lazy').setup({
-  -- NOTE: This plugin requires no configuration
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-  'bullets-vim/bullets.vim',
+  'tpope/vim-sleuth',
 
   require 'kickstart/plugins/gitsigns',
 
@@ -28,6 +26,8 @@ require('lazy').setup({
   require 'kickstart/plugins/render-markdown',
 
   require 'kickstart/plugins/obsidian',
+
+  require 'kickstart/plugins/bullets',
 
   require 'kickstart/plugins/noneckpain',
 

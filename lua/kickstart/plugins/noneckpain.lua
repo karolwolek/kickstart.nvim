@@ -1,10 +1,11 @@
 return {
   'shortcuts/no-neck-pain.nvim',
   version = '*',
-  lazy = false,
+  lazy = true,
   dependencies = {
     'obsidian-nvim/obsidian.nvim', -- Make sure obsidian loads first
   },
+  mappings = {},
   config = function()
     local function get_daily_note()
       local obClient = require('obsidian').get_client()

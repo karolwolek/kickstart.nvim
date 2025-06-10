@@ -1,5 +1,5 @@
 return {
-  { -- Collection of various small independent plugins/modules
+  {
     'echasnovski/mini.nvim',
     config = function()
       -- Better Around/Inside textobjects
@@ -23,12 +23,26 @@ return {
       local statusline = require 'mini.statusline'
       statusline.setup { use_icons = vim.g.have_nerd_font }
 
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
+      -- cursor location LINE:COLUMN
       ---@diagnostic disable-next-line: duplicate-set-field
       statusline.section_location = function()
         return '%2l:%-2v'
+      end
+
+      --- obsidian status line (if workspace) OR filetype
+      local original_file_section = statusline.section_fileinfo
+      ---@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_fileinfo = function(args)
+        local current_path = vim.api.nvim_buf_get_name(0)
+        local ok, obsidian = pcall(require, 'obsidian')
+        if ok and obsidian then
+          local client = obsidian.get_client()
+          if client:path_is_note(current_path) then
+            return vim.g.obsidian
+          else
+            return original_file_section(args)
+          end
+        end
       end
     end,
   },

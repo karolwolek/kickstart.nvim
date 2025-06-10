@@ -417,6 +417,7 @@ return {
       ui = {
         enable = false,
       },
+
       attachments = {
         img_folder = '/home/karolwolek/Documents/myvault/images/',
         confirm_img_paste = false,
@@ -440,6 +441,10 @@ return {
           path = client:vault_relative_path(path) or path
           return string.format('![%s](%s)', name, path)
         end,
+      },
+      statusline = {
+        enabled = true,
+        format = '{{backlinks}} backlinks  {{properties}} properties  {{words}} words  {{chars}} chars', -- works like the template system
       },
     },
   },
